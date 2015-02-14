@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="60dp"
+			  android:weightSum="1"
+	>
+
+	<ImageView
+		android:layout_width="60dp"
+		android:layout_height="match_parent"
+		android:id="@+id/image"
+		android:contentDescription="@string/cover_image"
+		android:src="@drawable/abc_btn_check_to_on_mtrl_000"
+		android:scaleType="fitStart"/>
+
+	<TextView
+		android:id="@+id/title"
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:textSize="@dimen/abc_text_size_large_material"
+		android:text="Lorem Ipsum Dolor Sit Amet Dolor Dolor"
+		android:gravity="center_vertical"
+		android:layout_weight="1"/>
+
+	<ImageView
+		android:layout_width="60dp"
+		android:layout_height="match_parent"
+		android:id="@+id/newEpisodesImage"
+		android:contentDescription="@string/new_episodes_available"
+		android:src="@drawable/new_episodes"
+		android:scaleType="fitEnd"
+		/>
+
+</LinearLayout>
