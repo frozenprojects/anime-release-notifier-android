@@ -2,10 +2,11 @@
 			  android:layout_width="match_parent"
 			  android:layout_height="60dp"
 			  android:weightSum="1"
-	>
+			  android:id="@+id/listItem"
+			  android:alpha="1">
 
 	<ImageView
-		android:layout_width="60dp"
+		android:layout_width="44dp"
 		android:layout_height="match_parent"
 		android:id="@+id/image"
 		android:contentDescription="@string/cover_image"
@@ -19,15 +20,19 @@
 		android:textSize="@dimen/abc_text_size_large_material"
 		android:text="Lorem Ipsum Dolor Sit Amet Dolor Dolor"
 		android:gravity="center_vertical"
-		android:layout_weight="1"/>
+		android:layout_weight="1"
+		android:paddingLeft="@dimen/list_item_padding"
+		android:paddingRight="@dimen/list_item_padding"/>
 
-	<ImageView
-		android:layout_width="60dp"
+	<TextView
+		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
-		android:id="@+id/newEpisodesImage"
-		android:contentDescription="@string/new_episodes_available"
-		android:src="@drawable/new_episodes"
-		android:scaleType="fitEnd"
-		/>
+		android:id="@+id/airingDate"
+		android:textAlignment="center"
+		android:text="Airing date"
+		android:textSize="20sp"
+		android:gravity="center_vertical"
+		android:padding="10dp"
+		android:visibility="gone"/>
 
 </LinearLayout>

@@ -48,6 +48,7 @@ public class AnimeUpdater {
 							JSONObject animeJSON = watchingList.getJSONObject(i);
 							JSONObject episodes = animeJSON.getJSONObject("episodes");
 							JSONObject animeProvider = animeJSON.getJSONObject("animeProvider");
+							JSONObject airingDate = animeJSON.getJSONObject("airingDate");
 
 							Anime anime = new Anime(
 								animeJSON.getString("title"),
@@ -59,7 +60,8 @@ public class AnimeUpdater {
 								episodes.getInt("watched"),
 								episodes.getInt("available"),
 								episodes.getInt("max"),
-								episodes.getInt("offset")
+								episodes.getInt("offset"),
+								airingDate.getString("remaining")
 							);
 
 							// Load cached episode count

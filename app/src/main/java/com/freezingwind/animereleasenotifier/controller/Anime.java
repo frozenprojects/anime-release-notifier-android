@@ -14,6 +14,8 @@ public class Anime {
 	public int max;
 	public int offset;
 
+	public String airingTimeRemaining;
+
 	public boolean notify;
 
 	public Anime(
@@ -26,7 +28,8 @@ public class Anime {
 			int watched,
 			int available,
 			int max,
-			int offset
+			int offset,
+			String airingTimeRemaining
 	) {
 		this.title = title;
 		this.imageURL = imageURL;
@@ -40,5 +43,7 @@ public class Anime {
 		this.available = available;
 		this.max = max;
 		this.offset = offset;
+
+		this.airingTimeRemaining = airingTimeRemaining;
 	}
 }

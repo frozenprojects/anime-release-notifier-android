@@ -57,7 +57,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 							public void onResponse(Bitmap bitmap) {
 								Notification.Builder mBuilder =
 										new Notification.Builder(context)
-												.setSmallIcon(R.drawable.ic_launcher)
+												.setSmallIcon(R.drawable.launcher_icon)
 												.setAutoCancel(true)
 												.setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, AnimeListActivity.class), 0))
 												.setDefaults(Notification.DEFAULT_SOUND)

@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.content.Context;
 import com.freezingwind.animereleasenotifier.R;
@@ -27,9 +28,10 @@ import android.graphics.Color;
 public class AnimeAdapter extends ArrayAdapter<Anime> {
 	// View lookup cache
 	private static class ViewHolder {
+		View listItem;
 		TextView title;
+		TextView airingDate;
 		ImageView image;
-		ImageView newEpisodesImage;
 	}
 
 	public AnimeAdapter(Context context, ArrayList<Anime> anime) {
@@ -50,7 +52,8 @@ public class AnimeAdapter extends ArrayAdapter<Anime> {
 			convertView = inflater.inflate(R.layout.row, parent, false);
 			viewHolder.title = (TextView) convertView.findViewById(R.id.title);
 			viewHolder.image = (ImageView) convertView.findViewById(R.id.image);
-			viewHolder.newEpisodesImage = (ImageView) convertView.findViewById(R.id.newEpisodesImage);
+			viewHolder.airingDate = (TextView) convertView.findViewById(R.id.airingDate);
+			viewHolder.listItem = convertView.findViewById(R.id.listItem);
 			convertView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
@@ -58,13 +61,22 @@ public class AnimeAdapter extends ArrayAdapter<Anime> {
 
 		// Populate the data into the template view using the data object
 		viewHolder.title.setText(anime.title);
+		viewHolder.airingDate.setText(anime.airingTimeRemaining);
 
 		// Mark as new
 		if(anime.watched < anime.available - anime.offset) {
-			viewHolder.title.setTextColor(Color.BLACK);
-			viewHolder.newEpisodesImage.setVisibility(View.VISIBLE);
+			int newTextColor = Color.rgb(16, 16, 16);
+
+			viewHolder.title.setTextColor(newTextColor);
+			viewHolder.airingDate.setTextColor(newTextColor);
+
+			if(viewHolder.listItem != null) {
+				viewHolder.listItem.setBackgroundColor(Color.argb(127, 80, 255, 80));
+				viewHolder.listItem.setAlpha(1.0f);
+			}
 		} else {
-			viewHolder.newEpisodesImage.setVisibility(View.INVISIBLE);
+			if(viewHolder.listItem != null)
+				viewHolder.listItem.setAlpha(0.7f);
 		}
 
 		ImageRequest imageRequest = new ImageRequest(anime.imageURL,

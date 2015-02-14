@@ -6,4 +6,6 @@
 
 	<dimen name="settings_horizontal_margin">0dip</dimen>
 	<dimen name="settings_vertical_margin">0dip</dimen>
+
+	<dimen name="list_item_padding">14dp</dimen>
 </resources>
