@@ -29,72 +29,73 @@ public class AnimeUpdater {
 		return animeList;
 	}
 
+	public void update(JSONObject response, final Context context, final AnimeListUpdateCallBack callBack) {
+		try {
+			animeList.clear();
+
+			SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+			SharedPreferences.Editor editor = sharedPrefs.edit();
+
+			JSONArray watchingList = response.getJSONArray("watching");
+			for (int i = 0; i < watchingList.length(); i++) {
+				JSONObject animeJSON = watchingList.getJSONObject(i);
+				JSONObject episodes = animeJSON.getJSONObject("episodes");
+				JSONObject animeProvider = animeJSON.getJSONObject("animeProvider");
+				JSONObject airingDate = animeJSON.getJSONObject("airingDate");
+
+				Anime anime = new Anime(
+						animeJSON.getString("title"),
+						animeJSON.getString("image"),
+						animeJSON.getString("url"),
+						animeProvider.getString("url"),
+						animeProvider.getString("nextEpisodeUrl"),
+						animeProvider.getString("videoUrl"),
+						episodes.getInt("watched"),
+						episodes.getInt("available"),
+						episodes.getInt("max"),
+						episodes.getInt("offset"),
+						airingDate.getString("remaining")
+				);
+
+				// Load cached episode count
+				String key = anime.title + ":episodes-available";
+				int availableCached = sharedPrefs.getInt(key, -1);
+
+				anime.notify = anime.available > availableCached && availableCached != -1;
+
+				// Save data in preferences
+				editor.putInt(anime.title + ":episodes-available", anime.available);
+
+				// Add to list
+				animeList.add(anime);
+			}
+
+			// Write preferences
+			editor.apply();
+		} catch (JSONException e) {
+			System.out.println("Error parsing JSON: " + e.toString());
+		} finally {
+			callBack.execute();
+		}
+	}
+
 	// Update
-	public void update(String userName, final Context context, final AnimeListUpdateCallBack callBack) {
+	public void updateByUser(String userName, final Context context, final AnimeListUpdateCallBack callBack) {
 		String apiUrl = "https://animereleasenotifier.com/api/animelist/" + userName;
 
 		//Toast.makeText(activity, "Loading anime list of " + userName, Toast.LENGTH_SHORT).show();
 
-		final JsonObjectRequest jsObjRequest = new JsonObjectRequest
-			(Request.Method.GET, apiUrl, null, new Response.Listener<JSONObject>() {
-				@Override
-				public void onResponse(JSONObject response) {
-					try {
-						animeList.clear();
-
-						SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-						SharedPreferences.Editor editor = sharedPrefs.edit();
-
-						JSONArray watchingList = response.getJSONArray("watching");
-						for (int i = 0; i < watchingList.length(); i++) {
-							JSONObject animeJSON = watchingList.getJSONObject(i);
-							JSONObject episodes = animeJSON.getJSONObject("episodes");
-							JSONObject animeProvider = animeJSON.getJSONObject("animeProvider");
-							JSONObject airingDate = animeJSON.getJSONObject("airingDate");
-
-							Anime anime = new Anime(
-								animeJSON.getString("title"),
-								animeJSON.getString("image"),
-								animeJSON.getString("url"),
-								animeProvider.getString("url"),
-								animeProvider.getString("nextEpisodeUrl"),
-								animeProvider.getString("videoUrl"),
-								episodes.getInt("watched"),
-								episodes.getInt("available"),
-								episodes.getInt("max"),
-								episodes.getInt("offset"),
-								airingDate.getString("remaining")
-							);
-
-							// Load cached episode count
-							String key = anime.title + ":episodes-available";
-							int availableCached = sharedPrefs.getInt(key, -1);
-
-							anime.notify = anime.available > availableCached && availableCached != -1;
-
-							// Save data in preferences
-							editor.putInt(anime.title + ":episodes-available", anime.available);
-
-							// Add to list
-							animeList.add(anime);
-						}
-
-						// Write preferences
-						editor.apply();
-					} catch (JSONException e) {
-						System.out.println("Error parsing JSON: " + e.toString());
-					} finally {
-						callBack.execute();
-					}
-				}
-			}, new Response.ErrorListener() {
-
-				@Override
-				public void onErrorResponse(VolleyError error) {
-					System.out.println("Error: " + error.toString());
-				}
+		final JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, apiUrl, null, new Response.Listener<JSONObject>() {
+			@Override
+			public void onResponse(JSONObject response) {
+				update(response, context, callBack);
 			}
-			);
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				System.out.println("Error: " + error.toString());
+			}
+		});
 
 		NetworkManager.getRequestQueue().add(jsObjRequest);
 	}

@@ -24,33 +24,46 @@ import com.freezingwind.animereleasenotifier.data.Anime;
  * A simple {@link Fragment} subclass.
  */
 public class AnimeListFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+	static final AnimeUpdater animeUpdater = new AnimeUpdater();
+
 	protected Activity activity;
 	protected ListView animeListView;
 
 	protected AnimeAdapter adapter;
-	protected AnimeUpdater animeUpdater;
 
 	protected SharedPreferences sharedPrefs;
 
 	public AnimeListFragment() {
-		// Required empty public constructor
+		// ...
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		activity = getActivity();
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
 
-		animeListView = new ListView(activity);
-		animeUpdater = new AnimeUpdater();
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
+		sharedPrefs.registerOnSharedPreferenceChangeListener(this);
 
 		adapter = new AnimeAdapter(activity, animeUpdater.getAnimeList());
+
+		if(animeListView == null) {
+			createAnimeListView();
+		}
+
+		update();
+
+		return animeListView;
+	}
+
+	// Create anime list view
+	private void createAnimeListView() {
+		animeListView = new ListView(activity);
 		animeListView.setAdapter(adapter);
 		animeListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
-									long id) {
+			                        long id) {
 				Anime anime = (Anime) parent.getItemAtPosition(position);
 
 				Intent intent;
@@ -96,11 +109,6 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 				}
 			}
 		});
-
-		sharedPrefs.registerOnSharedPreferenceChangeListener(this);
-		update();
-
-		return animeListView;
 	}
 
 	@Override
@@ -117,10 +125,11 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 		super.onResume();
 	}
 
+	// Update
 	void update() {
 		String userName = sharedPrefs.getString("userName", "");
 
-		animeUpdater.update(userName, activity, new AnimeListUpdateCallBack() {
+		animeUpdater.updateByUser(userName, activity, new AnimeListUpdateCallBack() {
 			@Override
 			public void execute() {
 				adapter.notifyDataSetChanged();

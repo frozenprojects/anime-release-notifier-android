@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.freezingwind.animereleasenotifier.R;
+import com.freezingwind.animereleasenotifier.controller.AppController;
 import com.freezingwind.animereleasenotifier.receiver.BootReceiver;
 import com.freezingwind.animereleasenotifier.ui.settings.SettingsActivity;
 
@@ -17,28 +18,52 @@ public class AnimeListActivity extends ActionBarActivity implements SharedPrefer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_anime_list);
-		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+        setContentView(R.layout.activity_animelist);
 
-		// Enable boot receiver
+	    // Listen to settings changes
+	    PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+
+	    // Update title
+	    updateTitle();
+
+	    // Enable boot receiver
+	    enableBootReceiver();
+
+	    // Schedule alarm
+	    AppController.scheduleAlarm(this);
+    }
+
+	// Enable boot receiver
+	private void enableBootReceiver() {
 		ComponentName receiver = new ComponentName(this, BootReceiver.class);
 		PackageManager packageManager = this.getPackageManager();
 
 		packageManager.setComponentEnabledSetting(receiver,
 				PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
 				PackageManager.DONT_KILL_APP);
-
-		// Schedule alarm
-		BootReceiver.scheduleAlarm(this);
-    }
+	}
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		switch(key) {
+			case "userName":
+				updateTitle();
+				break;
 			case "updateInterval":
-				BootReceiver.scheduleAlarm(this);
+				AppController.scheduleAlarm(this);
 				break;
 		}
+	}
+
+	// Update title
+	protected void updateTitle() {
+		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		String title = sharedPrefs.getString("userName", getString(R.string.app_name));
+
+		if(title.length() == 0)
+			title = getString(R.string.app_name);
+
+		setTitle(title);
 	}
 
 	@Override
