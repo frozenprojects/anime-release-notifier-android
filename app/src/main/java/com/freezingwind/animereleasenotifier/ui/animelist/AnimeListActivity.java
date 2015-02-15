@@ -1,23 +1,17 @@
-package com.freezingwind.animereleasenotifier.anime;
+package com.freezingwind.animereleasenotifier.ui.animelist;
 
-import android.app.PendingIntent;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.freezingwind.animereleasenotifier.R;
-import com.freezingwind.animereleasenotifier.alarm.AlarmHelper;
-import com.freezingwind.animereleasenotifier.receiver.AlarmReceiver;
 import com.freezingwind.animereleasenotifier.receiver.BootReceiver;
-import com.freezingwind.animereleasenotifier.settings.SettingsActivity;
-
+import com.freezingwind.animereleasenotifier.ui.settings.SettingsActivity;
 
 public class AnimeListActivity extends ActionBarActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
@@ -28,9 +22,9 @@ public class AnimeListActivity extends ActionBarActivity implements SharedPrefer
 
 		// Enable boot receiver
 		ComponentName receiver = new ComponentName(this, BootReceiver.class);
-		PackageManager pm = this.getPackageManager();
+		PackageManager packageManager = this.getPackageManager();
 
-		pm.setComponentEnabledSetting(receiver,
+		packageManager.setComponentEnabledSetting(receiver,
 				PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
 				PackageManager.DONT_KILL_APP);
 

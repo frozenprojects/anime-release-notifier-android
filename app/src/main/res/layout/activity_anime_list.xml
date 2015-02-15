@@ -8,7 +8,7 @@
 	<fragment
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:name="com.freezingwind.animereleasenotifier.anime.AnimeListFragment"
+		android:name="com.freezingwind.animereleasenotifier.ui.animelist.AnimeListFragment"
 		android:id="@+id/animeListFragment"
 		android:layout_centerVertical="false"
 		android:layout_centerHorizontal="false"

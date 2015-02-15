@@ -1,4 +1,4 @@
-package com.freezingwind.animereleasenotifier.controller;
+package com.freezingwind.animereleasenotifier.data;
 
 public class Anime {
 	public String title;

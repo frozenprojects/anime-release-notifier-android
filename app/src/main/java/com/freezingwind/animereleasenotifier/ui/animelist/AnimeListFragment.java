@@ -1,18 +1,10 @@
-package com.freezingwind.animereleasenotifier.anime;
-
+package com.freezingwind.animereleasenotifier.ui.animelist;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,20 +15,10 @@ import android.content.Intent;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.net.Uri;
-import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
-import com.freezingwind.animereleasenotifier.R;
-import com.freezingwind.animereleasenotifier.controller.AnimeListUpdateCallBack;
-import com.freezingwind.animereleasenotifier.controller.AnimeUpdater;
-import com.freezingwind.animereleasenotifier.controller.Anime;
-import com.freezingwind.animereleasenotifier.controller.AnimeAdapter;
-import com.freezingwind.animereleasenotifier.controller.MyVolley;
-
-import java.util.ArrayList;
-import java.util.prefs.Preferences;
+import com.freezingwind.animereleasenotifier.updater.AnimeListUpdateCallBack;
+import com.freezingwind.animereleasenotifier.updater.AnimeUpdater;
+import com.freezingwind.animereleasenotifier.data.Anime;
 
 /**
  * A simple {@link Fragment} subclass.

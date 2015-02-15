@@ -1,17 +1,14 @@
-package com.freezingwind.animereleasenotifier.controller;
+package com.freezingwind.animereleasenotifier.helpers;
 
 import android.content.Context;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
-/**
- * Created by Eduard on 2/1/2015.
- */
-public class MyVolley {
+public class NetworkManager {
 	private static RequestQueue mRequestQueue;
 
-	static void init(Context context) {
+	public static void init(Context context) {
 		mRequestQueue = Volley.newRequestQueue(context);
 	}
 

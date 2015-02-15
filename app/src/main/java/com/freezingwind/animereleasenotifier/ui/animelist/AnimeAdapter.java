@@ -1,16 +1,9 @@
-package com.freezingwind.animereleasenotifier.controller;
+package com.freezingwind.animereleasenotifier.ui.animelist;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.content.Context;
 import com.freezingwind.animereleasenotifier.R;
@@ -20,7 +13,8 @@ import android.view.LayoutInflater;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
-import com.freezingwind.animereleasenotifier.anime.AnimeListActivity;
+import com.freezingwind.animereleasenotifier.data.Anime;
+import com.freezingwind.animereleasenotifier.helpers.NetworkManager;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -94,7 +88,7 @@ public class AnimeAdapter extends ArrayAdapter<Anime> {
 				});
 
 		// Execute request
-		MyVolley.getRequestQueue().add(imageRequest);
+		NetworkManager.getRequestQueue().add(imageRequest);
 
 		// Return the completed view to render on screen
 		return convertView;

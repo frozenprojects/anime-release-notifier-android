@@ -4,12 +4,12 @@
 	android:paddingRight="@dimen/settings_horizontal_margin"
 	android:paddingTop="@dimen/settings_vertical_margin"
 	android:paddingBottom="@dimen/settings_vertical_margin"
-	tools:context="com.freezingwind.animereleasenotifier.settings.SettingsActivity">
+	tools:context="com.freezingwind.animereleasenotifier.ui.settings.SettingsActivity">
 
 	<fragment
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:name="com.freezingwind.animereleasenotifier.settings.SettingsFragment"
+		android:name="com.freezingwind.animereleasenotifier.ui.settings.SettingsFragment"
 		android:id="@+id/settingsFragment"
 		android:layout_centerVertical="false"
 		android:layout_centerHorizontal="false"

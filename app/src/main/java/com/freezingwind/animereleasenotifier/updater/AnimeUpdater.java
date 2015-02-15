@@ -1,4 +1,4 @@
-package com.freezingwind.animereleasenotifier.controller;
+package com.freezingwind.animereleasenotifier.updater;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,6 +8,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.freezingwind.animereleasenotifier.data.Anime;
+import com.freezingwind.animereleasenotifier.helpers.NetworkManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -94,6 +96,6 @@ public class AnimeUpdater {
 			}
 			);
 
-		MyVolley.getRequestQueue().add(jsObjRequest);
+		NetworkManager.getRequestQueue().add(jsObjRequest);
 	}
 }

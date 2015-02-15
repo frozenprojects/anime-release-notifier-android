@@ -2,14 +2,12 @@ package com.freezingwind.animereleasenotifier.receiver;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 
-import com.freezingwind.animereleasenotifier.alarm.AlarmHelper;
+import com.freezingwind.animereleasenotifier.helpers.AlarmHelper;
 
 public class BootReceiver extends BroadcastReceiver {
 	@Override

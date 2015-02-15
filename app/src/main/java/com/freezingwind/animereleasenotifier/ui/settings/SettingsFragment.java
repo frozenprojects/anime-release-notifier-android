@@ -1,10 +1,8 @@
-package com.freezingwind.animereleasenotifier.settings;
+package com.freezingwind.animereleasenotifier.ui.settings;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.preference.PreferenceFragment;
-import android.util.Log;
 
 import com.freezingwind.animereleasenotifier.R;
 

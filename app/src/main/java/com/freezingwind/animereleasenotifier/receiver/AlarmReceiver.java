@@ -9,18 +9,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.freezingwind.animereleasenotifier.R;
-import com.freezingwind.animereleasenotifier.anime.AnimeListActivity;
-import com.freezingwind.animereleasenotifier.controller.Anime;
-import com.freezingwind.animereleasenotifier.controller.AnimeListUpdateCallBack;
-import com.freezingwind.animereleasenotifier.controller.AnimeUpdater;
-import com.freezingwind.animereleasenotifier.controller.MyVolley;
+import com.freezingwind.animereleasenotifier.ui.animelist.AnimeListActivity;
+import com.freezingwind.animereleasenotifier.data.Anime;
+import com.freezingwind.animereleasenotifier.updater.AnimeListUpdateCallBack;
+import com.freezingwind.animereleasenotifier.updater.AnimeUpdater;
+import com.freezingwind.animereleasenotifier.helpers.NetworkManager;
 
 import java.util.ArrayList;
 
@@ -79,7 +77,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 						});
 
 				// Execute request
-				MyVolley.getRequestQueue().add(imageRequest);
+				NetworkManager.getRequestQueue().add(imageRequest);
 			}
 			}
 		});

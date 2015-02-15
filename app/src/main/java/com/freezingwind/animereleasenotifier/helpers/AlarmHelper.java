@@ -1,4 +1,4 @@
-package com.freezingwind.animereleasenotifier.alarm;
+package com.freezingwind.animereleasenotifier.helpers;
 
 import android.content.Context;
 import android.app.AlarmManager;

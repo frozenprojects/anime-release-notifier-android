@@ -2,6 +2,8 @@ package com.freezingwind.animereleasenotifier.controller;
 
 import android.app.Application;
 
+import com.freezingwind.animereleasenotifier.helpers.NetworkManager;
+
 /**
  * Created by Eduard on 2/1/2015.
  */
@@ -14,6 +16,6 @@ public class AppController extends Application {
 	}
 
 	private void init() {
-		MyVolley.init(this);
+		NetworkManager.init(this);
 	}
 }
