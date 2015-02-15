@@ -15,10 +15,14 @@ import android.content.Intent;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.net.Uri;
+import android.widget.ProgressBar;
 
+import com.freezingwind.animereleasenotifier.R;
 import com.freezingwind.animereleasenotifier.updater.AnimeListUpdateCallBack;
 import com.freezingwind.animereleasenotifier.updater.AnimeUpdater;
 import com.freezingwind.animereleasenotifier.data.Anime;
+
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,12 +30,16 @@ import com.freezingwind.animereleasenotifier.data.Anime;
 public class AnimeListFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 	static final AnimeUpdater animeUpdater = new AnimeUpdater();
 
-	protected Activity activity;
+	protected AnimeListActivity activity;
 	protected ListView animeListView;
 
 	protected AnimeAdapter adapter;
 
 	protected SharedPreferences sharedPrefs;
+
+	protected View view;
+
+	protected ProgressBar loadingSpinner;
 
 	public AnimeListFragment() {
 		// ...
@@ -40,25 +48,26 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
-		activity = getActivity();
+		view = inflater.inflate(R.layout.fragment_animelist, container, false);
+		animeListView = (ListView) view.findViewById(R.id.animeList);
+		loadingSpinner = (ProgressBar) view.findViewById(R.id.loadingSpinner);
+
+		activity = (AnimeListActivity) getActivity();
 
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
 		sharedPrefs.registerOnSharedPreferenceChangeListener(this);
 
 		adapter = new AnimeAdapter(activity, animeUpdater.getAnimeList());
 
-		if(animeListView == null) {
-			createAnimeListView();
-		}
-
+		setupAnimeListView();
 		update();
 
-		return animeListView;
+		return view;
 	}
 
 	// Create anime list view
-	private void createAnimeListView() {
-		animeListView = new ListView(activity);
+	private void setupAnimeListView() {
+		animeListView.setVisibility(View.GONE);
 		animeListView.setAdapter(adapter);
 		animeListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -128,10 +137,27 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 	// Update
 	void update() {
 		String userName = sharedPrefs.getString("userName", "");
+		String cachedJSON = sharedPrefs.getString("cachedAnimeListJSON", "");
 
+		if(cachedJSON.length() > 0) {
+			animeUpdater.update(cachedJSON, activity, new AnimeListUpdateCallBack() {
+				@Override
+				public void execute() {
+					loadingSpinner.setVisibility(View.INVISIBLE);
+					animeListView.setVisibility(View.VISIBLE);
+					adapter.notifyDataSetChanged();
+				}
+			});
+		} else {
+			loadingSpinner.setVisibility(View.VISIBLE);
+		}
+
+		// Update in the background
 		animeUpdater.updateByUser(userName, activity, new AnimeListUpdateCallBack() {
 			@Override
 			public void execute() {
+				loadingSpinner.setVisibility(View.INVISIBLE);
+				animeListView.setVisibility(View.VISIBLE);
 				adapter.notifyDataSetChanged();
 			}
 		});

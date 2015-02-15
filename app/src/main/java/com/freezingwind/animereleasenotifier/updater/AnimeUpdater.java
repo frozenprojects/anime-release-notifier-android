@@ -3,6 +3,7 @@ package com.freezingwind.animereleasenotifier.updater;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -27,6 +28,15 @@ public class AnimeUpdater {
 	// GetAnimeList
 	public ArrayList<Anime> getAnimeList() {
 		return animeList;
+	}
+
+	public void update(String response, final Context context, final AnimeListUpdateCallBack callBack) {
+		try {
+			JSONObject responseObject = new JSONObject(response);
+			update(responseObject, context, callBack);
+		} catch(JSONException e) {
+			Log.d("AnimeUpdater", e.toString());
+		}
 	}
 
 	public void update(JSONObject response, final Context context, final AnimeListUpdateCallBack callBack) {
@@ -89,6 +99,12 @@ public class AnimeUpdater {
 			@Override
 			public void onResponse(JSONObject response) {
 				update(response, context, callBack);
+
+				// Cache it
+				SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+				SharedPreferences.Editor editor = sharedPrefs.edit();
+				editor.putString("cachedAnimeListJSON", response.toString());
+				editor.apply();
 			}
 		}, new Response.ErrorListener() {
 			@Override

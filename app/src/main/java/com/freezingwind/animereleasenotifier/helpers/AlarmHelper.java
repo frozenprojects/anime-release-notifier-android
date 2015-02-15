@@ -49,7 +49,6 @@ public abstract class AlarmHelper {
 	 * Schedule the alarm unconditionally. To be used after boot.
 	 */
 	public void scheduleUnconditionally() {
-		Log.d("AlarmHelper", "called");
 		PendingIntent pendingIntent = pendingIntent(context, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Check approximately every alarm interval, don't wake the device up, wait initially for at least firstAlarmMinDelayMs

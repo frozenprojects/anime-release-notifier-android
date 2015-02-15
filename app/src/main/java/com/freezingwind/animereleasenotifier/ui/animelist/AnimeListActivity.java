@@ -9,6 +9,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+
 import com.freezingwind.animereleasenotifier.R;
 import com.freezingwind.animereleasenotifier.controller.AppController;
 import com.freezingwind.animereleasenotifier.receiver.BootReceiver;
@@ -17,7 +20,8 @@ import com.freezingwind.animereleasenotifier.ui.settings.SettingsActivity;
 public class AnimeListActivity extends ActionBarActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	    super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_animelist);
 
 	    // Listen to settings changes
@@ -49,6 +53,7 @@ public class AnimeListActivity extends ActionBarActivity implements SharedPrefer
 			case "userName":
 				updateTitle();
 				break;
+
 			case "updateInterval":
 				AppController.scheduleAlarm(this);
 				break;

@@ -10,7 +10,8 @@
 		android:id="@+id/image"
 		android:contentDescription="@string/cover_image"
 		android:src="@drawable/abc_btn_check_to_on_mtrl_000"
-		android:scaleType="fitStart"/>
+		android:scaleType="fitStart"
+		android:visibility="invisible"/>
 
 	<TextView
 		android:id="@+id/title"
@@ -21,7 +22,8 @@
 		android:gravity="center_vertical"
 		android:layout_weight="1"
 		android:paddingLeft="@dimen/list_item_padding"
-		android:paddingRight="@dimen/list_item_padding"/>
+		android:paddingRight="@dimen/list_item_padding"
+		android:textColor="@color/primary_text_default_material_light"/>
 
 	<TextView
 		android:layout_width="wrap_content"
@@ -32,6 +34,7 @@
 		android:textSize="20sp"
 		android:gravity="center_vertical"
 		android:paddingLeft="@dimen/list_item_padding"
-		android:paddingRight="@dimen/list_item_padding"/>
+		android:paddingRight="@dimen/list_item_padding"
+		android:textColor="@color/primary_text_default_material_light"/>
 
 </LinearLayout>

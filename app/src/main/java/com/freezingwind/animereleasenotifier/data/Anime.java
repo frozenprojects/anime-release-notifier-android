@@ -1,8 +1,14 @@
 package com.freezingwind.animereleasenotifier.data;
 
+import android.graphics.Bitmap;
+
+import com.android.volley.toolbox.ImageRequest;
+
 public class Anime {
 	public String title;
 	public String imageURL;
+	public Bitmap image;
+	public ImageRequest imageRequest;
 	public String url;
 
 	public String animeProviderURL;
@@ -45,5 +51,13 @@ public class Anime {
 		this.offset = offset;
 
 		this.airingTimeRemaining = airingTimeRemaining;
+
+		this.image = null;
+		this.imageRequest = null;
+	}
+
+	@Override
+	public String toString() {
+		return title;
 	}
 }

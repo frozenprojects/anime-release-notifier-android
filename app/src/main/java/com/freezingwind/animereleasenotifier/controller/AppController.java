@@ -5,13 +5,19 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
 
 import com.freezingwind.animereleasenotifier.helpers.AlarmHelper;
 import com.freezingwind.animereleasenotifier.helpers.NetworkManager;
 import com.freezingwind.animereleasenotifier.receiver.AlarmReceiver;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AppController extends Application {
+	public static Map<String, Bitmap> imageCache = new HashMap<String, Bitmap>();
+
 	@Override
 	public void onCreate() {
 		super.onCreate();

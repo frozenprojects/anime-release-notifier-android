@@ -1,5 +1,6 @@
 package com.freezingwind.animereleasenotifier.ui.animelist;
 
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
+import com.freezingwind.animereleasenotifier.controller.AppController;
 import com.freezingwind.animereleasenotifier.data.Anime;
 import com.freezingwind.animereleasenotifier.helpers.NetworkManager;
 
@@ -41,13 +43,15 @@ public class AnimeAdapter extends ArrayAdapter<Anime> {
 		final ViewHolder viewHolder; // view lookup cache stored in tag
 
 		if(convertView == null) {
-			viewHolder = new ViewHolder();
 			LayoutInflater inflater = LayoutInflater.from(getContext());
 			convertView = inflater.inflate(R.layout.row, parent, false);
+
+			viewHolder = new ViewHolder();
 			viewHolder.title = (TextView) convertView.findViewById(R.id.title);
 			viewHolder.image = (ImageView) convertView.findViewById(R.id.image);
 			viewHolder.airingDate = (TextView) convertView.findViewById(R.id.airingDate);
 			viewHolder.listItem = convertView.findViewById(R.id.listItem);
+
 			convertView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
@@ -59,36 +63,47 @@ public class AnimeAdapter extends ArrayAdapter<Anime> {
 
 		// Mark as new
 		if(anime.watched < anime.available - anime.offset) {
-			int newTextColor = Color.rgb(16, 16, 16);
-
-			viewHolder.title.setTextColor(newTextColor);
-			viewHolder.airingDate.setTextColor(newTextColor);
-
-			if(viewHolder.listItem != null) {
-				viewHolder.listItem.setBackgroundColor(Color.argb(127, 80, 255, 80));
-				viewHolder.listItem.setAlpha(1.0f);
-			}
+			viewHolder.listItem.setBackgroundColor(Color.argb(127, 80, 255, 80));
+			viewHolder.listItem.setAlpha(1.0f);
 		} else {
-			if(viewHolder.listItem != null)
-				viewHolder.listItem.setAlpha(0.7f);
+			viewHolder.listItem.setBackgroundColor(Color.TRANSPARENT);
+			viewHolder.listItem.setAlpha(0.2f);
 		}
 
-		ImageRequest imageRequest = new ImageRequest(anime.imageURL,
-				new Response.Listener<Bitmap>() {
-					@Override
-					public void onResponse(Bitmap bitmap) {
-						viewHolder.image.setImageBitmap(bitmap);
-					}
-				}, 0, 0, null,
-				new Response.ErrorListener() {
-					public void onErrorResponse(VolleyError error) {
-						// TODO: ...
-						//viewHolder.image.setImageResource(R.drawable.image_load_error);
-					}
-				});
+		// Load image from memory cache
+		if(anime.image == null)
+			anime.image = AppController.imageCache.get(anime.imageURL);
 
-		// Execute request
-		NetworkManager.getRequestQueue().add(imageRequest);
+		// Image
+		if(anime.image != null) {
+			viewHolder.image.setImageBitmap(anime.image);
+			viewHolder.image.setVisibility(View.VISIBLE);
+		} else if(anime.imageRequest == null) {
+			viewHolder.image.setVisibility(View.INVISIBLE);
+
+			anime.imageRequest = new ImageRequest(anime.imageURL,
+					new Response.Listener<Bitmap>() {
+						@Override
+						public void onResponse(Bitmap bitmap) {
+							anime.image = bitmap;
+							AppController.imageCache.put(anime.imageURL, bitmap);
+
+							notifyDataSetChanged();
+						}
+					}, 0, 0, null,
+					new Response.ErrorListener() {
+						public void onErrorResponse(VolleyError error) {
+							// TODO: ...
+							//viewHolder.image.setImageResource(R.drawable.image_load_error);
+							anime.imageRequest = null;
+						}
+					});
+
+			// Execute request
+			NetworkManager.getRequestQueue().add(anime.imageRequest);
+		} else {
+			viewHolder.image.setVisibility(View.INVISIBLE);
+		}
 
 		// Return the completed view to render on screen
 		return convertView;
