@@ -1,4 +1,4 @@
-package com.freezingwind.animereleasenotifier.ui.animelist;
+package com.freezingwind.animereleasenotifier.ui.adapter;
 
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -64,6 +64,9 @@ public class AnimeAdapter extends ArrayAdapter<Anime> {
 		// Mark as new
 		if(anime.watched < anime.available - anime.offset) {
 			viewHolder.listItem.setBackgroundColor(Color.argb(127, 80, 255, 80));
+			viewHolder.listItem.setAlpha(1.0f);
+		} else if(anime.status == "completed") {
+			viewHolder.listItem.setBackgroundColor(Color.TRANSPARENT);
 			viewHolder.listItem.setAlpha(1.0f);
 		} else {
 			viewHolder.listItem.setBackgroundColor(Color.TRANSPARENT);

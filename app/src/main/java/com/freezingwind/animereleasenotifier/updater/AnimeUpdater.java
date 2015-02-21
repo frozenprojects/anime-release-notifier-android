@@ -20,9 +20,11 @@ import java.util.ArrayList;
 
 public class AnimeUpdater {
 	protected ArrayList<Anime> animeList;
+	protected boolean completedOnly;
 
-	public AnimeUpdater() {
+	public AnimeUpdater(boolean fetchCompletedOnly) {
 		animeList = new ArrayList<Anime>();
+		completedOnly = fetchCompletedOnly;
 	}
 
 	// GetAnimeList
@@ -50,21 +52,29 @@ public class AnimeUpdater {
 			for (int i = 0; i < watchingList.length(); i++) {
 				JSONObject animeJSON = watchingList.getJSONObject(i);
 				JSONObject episodes = animeJSON.getJSONObject("episodes");
-				JSONObject animeProvider = animeJSON.getJSONObject("animeProvider");
 				JSONObject airingDate = animeJSON.getJSONObject("airingDate");
+
+				JSONObject animeProvider = null;
+
+				try {
+					animeProvider = animeJSON.getJSONObject("animeProvider");
+				} catch(JSONException e) {
+					//Log.d("AnimeUpdater", "No anime provider available");
+				}
 
 				Anime anime = new Anime(
 						animeJSON.getString("title"),
 						animeJSON.getString("image"),
 						animeJSON.getString("url"),
-						animeProvider.getString("url"),
-						animeProvider.getString("nextEpisodeUrl"),
-						animeProvider.getString("videoUrl"),
+						animeProvider != null ? animeProvider.getString("url") : "",
+						animeProvider != null ? animeProvider.getString("nextEpisodeUrl") : "",
+						animeProvider != null ? animeProvider.getString("videoUrl") : "",
 						episodes.getInt("watched"),
 						episodes.getInt("available"),
 						episodes.getInt("max"),
 						episodes.getInt("offset"),
-						airingDate.getString("remaining")
+						airingDate.getString("remaining"),
+						completedOnly ? "completed" : "watching"
 				);
 
 				// Load cached episode count
@@ -83,7 +93,7 @@ public class AnimeUpdater {
 			// Write preferences
 			editor.apply();
 		} catch (JSONException e) {
-			System.out.println("Error parsing JSON: " + e.toString());
+			Log.d("AnimeUpdater", "Error parsing JSON: " + e.toString());
 		} finally {
 			callBack.execute();
 		}
@@ -92,6 +102,9 @@ public class AnimeUpdater {
 	// Update
 	public void updateByUser(String userName, final Context context, final AnimeListUpdateCallBack callBack) {
 		String apiUrl = "https://animereleasenotifier.com/api/animelist/" + userName;
+
+		if(completedOnly)
+			apiUrl += "&completed=1";
 
 		//Toast.makeText(activity, "Loading anime list of " + userName, Toast.LENGTH_SHORT).show();
 
@@ -103,7 +116,7 @@ public class AnimeUpdater {
 				// Cache it
 				SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 				SharedPreferences.Editor editor = sharedPrefs.edit();
-				editor.putString("cachedAnimeListJSON", response.toString());
+				editor.putString("cachedAnimeListJSON" + (completedOnly ? "Completed" : ""), response.toString());
 				editor.apply();
 			}
 		}, new Response.ErrorListener() {

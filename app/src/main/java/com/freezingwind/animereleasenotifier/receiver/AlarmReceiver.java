@@ -27,7 +27,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 	protected AnimeUpdater updater;
 
 	public AlarmReceiver() {
-		updater = new AnimeUpdater();
+		updater = new AnimeUpdater(false);
 	}
 
 	@Override

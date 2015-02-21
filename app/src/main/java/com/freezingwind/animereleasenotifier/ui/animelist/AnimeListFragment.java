@@ -1,10 +1,9 @@
 package com.freezingwind.animereleasenotifier.ui.animelist;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,18 +18,19 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.freezingwind.animereleasenotifier.R;
+import com.freezingwind.animereleasenotifier.ui.adapter.AnimeAdapter;
 import com.freezingwind.animereleasenotifier.ui.settings.SettingsActivity;
 import com.freezingwind.animereleasenotifier.updater.AnimeListUpdateCallBack;
 import com.freezingwind.animereleasenotifier.updater.AnimeUpdater;
 import com.freezingwind.animereleasenotifier.data.Anime;
 
-import org.json.JSONObject;
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AnimeListFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
-	static final AnimeUpdater animeUpdater = new AnimeUpdater();
+	static final AnimeUpdater animeUpdater = new AnimeUpdater(false);
 
 	protected AnimeListActivity activity;
 	protected ListView animeListView;
@@ -63,7 +63,7 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
 		sharedPrefs.registerOnSharedPreferenceChangeListener(this);
 
-		adapter = new AnimeAdapter(activity, animeUpdater.getAnimeList());
+		adapter = new AnimeAdapter(activity, getAnimeUpdater().getAnimeList());
 
 		setupAnimeListView();
 		update();
@@ -71,8 +71,13 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 		return view;
 	}
 
+	// Get anime list
+	protected AnimeUpdater getAnimeUpdater() {
+		return animeUpdater;
+	}
+
 	// Create anime list view
-	private void setupAnimeListView() {
+	protected void setupAnimeListView() {
 		animeListView.setVisibility(View.GONE);
 		animeListView.setAdapter(adapter);
 		animeListView.setOnItemClickListener(new OnItemClickListener() {
@@ -122,6 +127,19 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 						Log.d("AnimeListFragment", e.toString());
 					}
 				}
+
+				// List provider URL
+				if(anime.url != null && !anime.url.isEmpty()) {
+					Uri uri = Uri.parse(anime.url);
+					intent = new Intent(Intent.ACTION_VIEW, uri);
+
+					try {
+						startActivity(intent);
+						return;
+					} catch (ActivityNotFoundException e) {
+						Log.d("AnimeListFragment", e.toString());
+					}
+				}
 			}
 		});
 	}
@@ -140,24 +158,37 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 		super.onResume();
 	}
 
+	protected String getCacheKey() {
+		return "cachedAnimeListJSON";
+	}
+
+	protected void displayUserNameMissingNotification() {
+		Toast.makeText(activity, "Please enter your ARN username", Toast.LENGTH_SHORT).show();
+
+		try {
+			startActivity(showSettingsIntent);
+		} catch(IllegalStateException e) {
+			Log.d("AnimeListFragment", "Not attached to activity");
+		}
+	}
+
 	// Update
-	void update() {
+	protected void update() {
 		String userName = sharedPrefs.getString("userName", "");
-		String cachedJSON = sharedPrefs.getString("cachedAnimeListJSON", "");
+		String cachedJSON = sharedPrefs.getString(getCacheKey(), "");
+
+		final AnimeUpdater updater = getAnimeUpdater();
 
 		if(userName.length() == 0) {
-			Toast.makeText(activity, "Please enter your ARN username", Toast.LENGTH_SHORT).show();
-			startActivity(showSettingsIntent);
+			displayUserNameMissingNotification();
 			return;
 		}
 
 		if(cachedJSON.length() > 0) {
-			animeUpdater.update(cachedJSON, activity, new AnimeListUpdateCallBack() {
+			updater.update(cachedJSON, activity, new AnimeListUpdateCallBack() {
 				@Override
 				public void execute() {
-					loadingSpinner.setVisibility(View.INVISIBLE);
-					animeListView.setVisibility(View.VISIBLE);
-					adapter.notifyDataSetChanged();
+					onReceiveAnimeList();
 				}
 			});
 		} else {
@@ -165,13 +196,17 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 		}
 
 		// Update in the background
-		animeUpdater.updateByUser(userName, activity, new AnimeListUpdateCallBack() {
+		updater.updateByUser(userName, activity, new AnimeListUpdateCallBack() {
 			@Override
 			public void execute() {
-				loadingSpinner.setVisibility(View.INVISIBLE);
-				animeListView.setVisibility(View.VISIBLE);
-				adapter.notifyDataSetChanged();
+				onReceiveAnimeList();
 			}
 		});
+	}
+
+	protected void onReceiveAnimeList() {
+		loadingSpinner.setVisibility(View.INVISIBLE);
+		animeListView.setVisibility(View.VISIBLE);
+		adapter.notifyDataSetChanged();
 	}
 }

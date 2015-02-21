@@ -22,6 +22,8 @@ public class Anime {
 
 	public String airingTimeRemaining;
 
+	public String status;
+
 	public boolean notify;
 
 	public Anime(
@@ -35,7 +37,8 @@ public class Anime {
 			int available,
 			int max,
 			int offset,
-			String airingTimeRemaining
+			String airingTimeRemaining,
+	        String status
 	) {
 		this.title = title;
 		this.imageURL = imageURL;
@@ -51,6 +54,7 @@ public class Anime {
 		this.offset = offset;
 
 		this.airingTimeRemaining = airingTimeRemaining;
+		this.status = status;
 
 		this.image = null;
 		this.imageRequest = null;

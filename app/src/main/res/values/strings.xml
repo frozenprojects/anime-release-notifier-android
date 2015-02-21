@@ -8,5 +8,6 @@
     <string name="title_activity_settings">Settings</string>
 	<string name="cover_image">Cover image</string>
 	<string name="new_episodes_available">New episodes available</string>
+	<string name="title_activity_watching">Watching</string>
 
 </resources>
