@@ -16,8 +16,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.net.Uri;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.freezingwind.animereleasenotifier.R;
+import com.freezingwind.animereleasenotifier.ui.settings.SettingsActivity;
 import com.freezingwind.animereleasenotifier.updater.AnimeListUpdateCallBack;
 import com.freezingwind.animereleasenotifier.updater.AnimeUpdater;
 import com.freezingwind.animereleasenotifier.data.Anime;
@@ -41,6 +43,8 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 
 	protected ProgressBar loadingSpinner;
 
+	protected Intent showSettingsIntent;
+
 	public AnimeListFragment() {
 		// ...
 	}
@@ -53,6 +57,8 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 		loadingSpinner = (ProgressBar) view.findViewById(R.id.loadingSpinner);
 
 		activity = (AnimeListActivity) getActivity();
+
+		showSettingsIntent = new Intent(activity, SettingsActivity.class);
 
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
 		sharedPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -138,6 +144,12 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 	void update() {
 		String userName = sharedPrefs.getString("userName", "");
 		String cachedJSON = sharedPrefs.getString("cachedAnimeListJSON", "");
+
+		if(userName.length() == 0) {
+			Toast.makeText(activity, "Please enter your ARN username", Toast.LENGTH_SHORT).show();
+			startActivity(showSettingsIntent);
+			return;
+		}
 
 		if(cachedJSON.length() > 0) {
 			animeUpdater.update(cachedJSON, activity, new AnimeListUpdateCallBack() {
