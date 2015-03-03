@@ -22,6 +22,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 
 public class AnimeAdapter extends ArrayAdapter<Anime> {
+	protected int layout;
+
 	// View lookup cache
 	private static class ViewHolder {
 		View listItem;
@@ -30,8 +32,10 @@ public class AnimeAdapter extends ArrayAdapter<Anime> {
 		ImageView image;
 	}
 
-	public AnimeAdapter(Context context, ArrayList<Anime> anime) {
-		super(context, R.layout.row, anime);
+	public AnimeAdapter(Context context, int layout, ArrayList<Anime> anime) {
+		super(context, layout, anime);
+
+		this.layout = layout;
 	}
 
 	@Override
@@ -44,7 +48,7 @@ public class AnimeAdapter extends ArrayAdapter<Anime> {
 
 		if(convertView == null) {
 			LayoutInflater inflater = LayoutInflater.from(getContext());
-			convertView = inflater.inflate(R.layout.row, parent, false);
+			convertView = inflater.inflate(this.layout, parent, false);
 
 			viewHolder = new ViewHolder();
 			viewHolder.title = (TextView) convertView.findViewById(R.id.title);

@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -12,6 +13,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.app.ActionBar;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.freezingwind.animereleasenotifier.R;
 import com.freezingwind.animereleasenotifier.controller.AppController;
@@ -29,8 +32,11 @@ public class AnimeListActivity extends ActionBarActivity implements SharedPrefer
 		"Watching",
 		"Completed"
 	};
+	private MenuItem viewAsList;
+	private MenuItem viewAsGrid;
+	private SharedPreferences sharedPrefs;
 
-    @Override
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 
@@ -39,6 +45,7 @@ public class AnimeListActivity extends ActionBarActivity implements SharedPrefer
 	    // Tabs
 	    viewPager = (ViewPager) findViewById(R.id.pager);
 	    actionBar = getSupportActionBar();
+
 	    tabsAdapter = new TabsAdapter(getSupportFragmentManager());
 
 	    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -72,7 +79,8 @@ public class AnimeListActivity extends ActionBarActivity implements SharedPrefer
 		}
 
 	    // Listen to settings changes
-	    PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		sharedPrefs.registerOnSharedPreferenceChangeListener(this);
 
 	    // Update title
 	    updateTitle();
@@ -127,6 +135,12 @@ public class AnimeListActivity extends ActionBarActivity implements SharedPrefer
     public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_anime_list, menu);
+		viewAsList = menu.findItem(R.id.action_view_as_list);
+		viewAsGrid = menu.findItem(R.id.action_view_as_grid);
+
+		// Action bar
+		updateActionBar();
+
         return true;
     }
 
@@ -137,14 +151,43 @@ public class AnimeListActivity extends ActionBarActivity implements SharedPrefer
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-			startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-        }
+	    switch(id) {
+		    case R.id.action_settings:
+			    startActivity(new Intent(this, SettingsActivity.class));
+			    return true;
 
-        return super.onOptionsItemSelected(item);
+		    case R.id.action_view_as_list:
+			    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+			    sharedPrefs.edit().putString("viewType", "list").commit();
+			    updateActionBar();
+			    rebuildFragments();
+			    return true;
+
+		    case R.id.action_view_as_grid:
+			    sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+			    sharedPrefs.edit().putString("viewType", "grid").commit();
+			    updateActionBar();
+			    rebuildFragments();
+			    return true;
+
+		    default:
+			    return super.onOptionsItemSelected(item);
+	    }
     }
+
+	void updateActionBar() {
+		String viewType = sharedPrefs.getString("viewType", "list");
+
+		viewAsList.setVisible(!viewType.equals("list"));
+		viewAsGrid.setVisible(!viewType.equals("grid"));
+	}
+
+	void rebuildFragments() {
+		int current = viewPager.getCurrentItem();
+
+		viewPager.setAdapter(tabsAdapter);
+		viewPager.setCurrentItem(current);
+	}
 
 	@Override
 	public void onTabSelected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {

@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.AbsListView;
 import android.content.Intent;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -33,7 +33,7 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 	static final AnimeUpdater animeUpdater = new AnimeUpdater(false);
 
 	protected AnimeListActivity activity;
-	protected ListView animeListView;
+	protected AbsListView animeListView;
 
 	protected AnimeAdapter adapter;
 
@@ -44,26 +44,30 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 	protected ProgressBar loadingSpinner;
 
 	protected Intent showSettingsIntent;
+	protected boolean useGridView;
 
 	public AnimeListFragment() {
 		// ...
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-							 Bundle savedInstanceState) {
-		view = inflater.inflate(R.layout.fragment_animelist, container, false);
-		animeListView = (ListView) view.findViewById(R.id.animeList);
-		loadingSpinner = (ProgressBar) view.findViewById(R.id.loadingSpinner);
-
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		activity = (AnimeListActivity) getActivity();
-
-		showSettingsIntent = new Intent(activity, SettingsActivity.class);
 
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
 		sharedPrefs.registerOnSharedPreferenceChangeListener(this);
 
-		adapter = new AnimeAdapter(activity, getAnimeUpdater().getAnimeList());
+		showSettingsIntent = new Intent(activity, SettingsActivity.class);
+
+		useGridView = sharedPrefs.getString("viewType", "list").equals("grid");
+
+		int layout = useGridView ? R.layout.fragment_animelist_grid : R.layout.fragment_animelist;
+
+		view = inflater.inflate(layout, container, false);
+		animeListView = (AbsListView) view.findViewById(R.id.animeList);
+		loadingSpinner = (ProgressBar) view.findViewById(R.id.loadingSpinner);
+
+		adapter = new AnimeAdapter(activity, useGridView ? R.layout.cell : R.layout.row, getAnimeUpdater().getAnimeList());
 
 		setupAnimeListView();
 		update();
