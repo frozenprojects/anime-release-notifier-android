@@ -106,6 +106,9 @@ public class AnimeUpdater {
 		if(completedOnly)
 			apiUrl += "&completed=1";
 
+		final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+		apiUrl += "&animeProvider=" + sharedPrefs.getString("animeProvider", "KissAnime");
+
 		//Toast.makeText(activity, "Loading anime list of " + userName, Toast.LENGTH_SHORT).show();
 
 		final JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, apiUrl, null, new Response.Listener<JSONObject>() {
@@ -114,7 +117,6 @@ public class AnimeUpdater {
 				update(response, context, callBack);
 
 				// Cache it
-				SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 				SharedPreferences.Editor editor = sharedPrefs.edit();
 				editor.putString("cachedAnimeListJSON" + (completedOnly ? "Completed" : ""), response.toString());
 				editor.apply();

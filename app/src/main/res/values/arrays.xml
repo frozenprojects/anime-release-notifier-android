@@ -18,4 +18,16 @@
 		<item>720</item>
 		<item>1440</item>
 	</string-array>
+
+	<string-array name="animeProviderNames">
+		<item>kissanime.com</item>
+		<item>nyaa.se</item>
+		<item>twist.moe</item>
+	</string-array>
+
+	<string-array name="animeProviderValues">
+		<item>KissAnime</item>
+		<item>Nyaa</item>
+		<item>AnimeTwist</item>
+	</string-array>
 </resources>

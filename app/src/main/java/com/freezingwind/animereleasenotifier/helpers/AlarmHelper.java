@@ -54,7 +54,7 @@ public abstract class AlarmHelper {
 		// Check approximately every alarm interval, don't wake the device up, wait initially for at least firstAlarmMinDelayMs
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.setInexactRepeating(
-			AlarmManager.ELAPSED_REALTIME,
+			AlarmManager.ELAPSED_REALTIME_WAKEUP,
 			SystemClock.elapsedRealtime() + firstAlarmMinDelayMs,
 			inexactAlarmIntervalMs,
 			pendingIntent

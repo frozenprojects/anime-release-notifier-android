@@ -10,6 +10,13 @@
 	</PreferenceCategory>
 
 	<PreferenceCategory android:title="Advanced">
+		<ListPreference android:title="Mobile anime provider"
+						android:defaultValue="KissAnime"
+						android:summary="Select the anime provider for your mobile phone"
+						android:key="animeProvider"
+						android:entries="@array/animeProviderNames"
+						android:entryValues="@array/animeProviderValues"/>
+
 		<ListPreference android:title="Update interval"
 			android:defaultValue="60"
 			android:summary="After how many minutes we check for new episodes"

@@ -147,6 +147,7 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		switch(key) {
+			case "animeProvider":
 			case "userName":
 				update();
 				break;
