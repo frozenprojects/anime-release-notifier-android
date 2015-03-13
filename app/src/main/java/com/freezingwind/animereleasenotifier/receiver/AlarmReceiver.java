@@ -47,7 +47,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 					// Notify
 					if(!anime.notify)
-						return;
+						continue;
 
 					ImageRequest imageRequest = new ImageRequest(anime.imageURL,
 							new Response.Listener<Bitmap>() {
