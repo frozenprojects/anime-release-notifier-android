@@ -73,7 +73,7 @@ public class AnimeUpdater {
 						episodes.getInt("available"),
 						episodes.getInt("max"),
 						episodes.getInt("offset"),
-						airingDate.getString("remaining"),
+						airingDate.getString("remainingString"),
 						completedOnly ? "completed" : "watching"
 				);
 
