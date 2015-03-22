@@ -111,7 +111,7 @@ public class AnimeUpdater {
 
 		//Toast.makeText(activity, "Loading anime list of " + userName, Toast.LENGTH_SHORT).show();
 
-		final JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, apiUrl, null, new Response.Listener<JSONObject>() {
+		final JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, apiUrl, (String)null, new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
 				update(response, context, callBack);
