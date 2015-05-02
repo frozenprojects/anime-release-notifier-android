@@ -31,6 +31,7 @@ import java.util.ArrayList;
  */
 public class AnimeListFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 	static final AnimeUpdater animeUpdater = new AnimeUpdater(false);
+	static long lastUserNameMissingNotification = 0;
 
 	protected AnimeListActivity activity;
 	protected AbsListView animeListView;
@@ -163,11 +164,21 @@ public class AnimeListFragment extends Fragment implements SharedPreferences.OnS
 		super.onResume();
 	}
 
+	// GetCacheKey
 	protected String getCacheKey() {
 		return "cachedAnimeListJSON";
 	}
 
+	// DisplayUserNameMissingNotification
 	protected void displayUserNameMissingNotification() {
+		// This notification should never be sent more than once in 5 seconds
+		if(System.currentTimeMillis() - lastUserNameMissingNotification < 5000)
+			return;
+
+		// Save the last time this notification happened
+		lastUserNameMissingNotification = System.currentTimeMillis();
+
+		// Text message
 		Toast.makeText(activity, "Please enter your ARN username", Toast.LENGTH_SHORT).show();
 
 		try {

@@ -11,7 +11,7 @@
 
 	<PreferenceCategory android:title="Advanced">
 		<ListPreference android:title="Mobile anime provider"
-						android:defaultValue="KissAnime"
+						android:defaultValue="Nyaa"
 						android:summary="Select the anime provider for your mobile phone"
 						android:key="animeProvider"
 						android:entries="@array/animeProviderNames"
